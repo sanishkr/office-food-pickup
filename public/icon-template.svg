@@ -1,0 +1,6 @@
+<!-- This is a temporary SVG that we'll use to generate PWA icons -->
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#2563eb"/>
+  <text x="256" y="320" font-family="Arial, sans-serif" font-size="240" text-anchor="middle" fill="white">🍕</text>
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" text-anchor="middle" fill="white" font-weight="bold">Food Tracker</text>
+</svg>

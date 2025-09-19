@@ -9,3 +9,6 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>
 );
+
+// PWA functionality is handled by vite-plugin-pwa automatically
+// No manual service worker registration needed
