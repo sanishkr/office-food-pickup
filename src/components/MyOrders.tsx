@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import type { Order } from "../types/Order";
 
+interface StoredOrder {
+  id: string;
+  date: string;
+  employeeName: string;
+}
+
 interface MyOrdersProps {
   orders: Order[];
   onBackToForm: () => void;
@@ -27,14 +33,26 @@ const MyOrders: React.FC<MyOrdersProps> = ({
     }
   }, []);
 
-  // Filter orders for current employee
-  const myOrders = orders.filter(
-    (order) =>
-      order.employeeName.toLowerCase() === currentEmployee.toLowerCase()
-  );
+  // Get stored order references for the current employee
+  const [employeeOrderRefs, setEmployeeOrderRefs] = useState<StoredOrder[]>([]);
+
+  useEffect(() => {
+    if (currentEmployee) {
+      const storedRefs = localStorage.getItem("myOrderIds");
+      if (storedRefs) {
+        const allRefs = JSON.parse(storedRefs);
+        // Filter refs for current employee
+        const employeeRefs = allRefs.filter(
+          (ref: StoredOrder) => ref.employeeName === currentEmployee
+        );
+        setEmployeeOrderRefs(employeeRefs);
+      }
+    }
+  }, [currentEmployee]);
 
   // Helper function to check if a date is today
-  const isToday = (date: Date) => {
+  const isToday = (dateStr: string) => {
+    const date = new Date(dateStr);
     const today = new Date();
     return (
       date.getDate() === today.getDate() &&
@@ -43,9 +61,21 @@ const MyOrders: React.FC<MyOrdersProps> = ({
     );
   };
 
-  // Separate today's orders from past orders
-  const todayOrders = myOrders.filter((order) => isToday(order.createdAt));
-  const pastOrders = myOrders.filter((order) => !isToday(order.createdAt));
+  // Filter orders based on stored references
+  const myOrders = orders.filter((order) =>
+    employeeOrderRefs.some((ref) => ref.id === order.orderId)
+  );
+
+  // Separate today's orders from past orders using the stored dates
+  const todayOrders = myOrders.filter((order) => {
+    const ref = employeeOrderRefs.find((ref) => ref.id === order.orderId);
+    return ref && isToday(ref.date);
+  });
+
+  const pastOrders = myOrders.filter((order) => {
+    const ref = employeeOrderRefs.find((ref) => ref.id === order.orderId);
+    return ref && !isToday(ref.date);
+  });
 
   // Sort by creation date (most recent first)
   const sortedTodayOrders = todayOrders.sort(
@@ -259,7 +289,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                           #{order.orderId}
                         </h3>
                         <p className="text-sm text-gray-500">
-                          Ordered at{" "}
+                          Order added at{" "}
                           {order.createdAt.toLocaleTimeString("en-US", {
                             hour: "2-digit",
                             minute: "2-digit",

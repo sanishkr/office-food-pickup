@@ -1,89 +1,96 @@
 import { useState, useEffect } from "react";
 import EmployeeOrderForm from "./components/EmployeeOrderForm";
 import OrderTrackingTable from "./components/OrderTrackingTable";
-import HistoricalView from "./components/HistoricalView";
-import OrderStatusPage from "./components/OrderStatusPage";
+// import HistoricalView from "./components/HistoricalView";
 import MyOrders from "./components/MyOrders";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import type { Order, OrderStatus } from "./types/Order";
+import { useSupabaseMyOrders } from "./hooks/useSupabaseMyOrders";
+import { useSupabaseTrackingOrders } from "./hooks/useSupabaseTrackingOrders";
+import { supabase } from "./lib/supabase";
 
 function App() {
-  const [currentView, setCurrentView] = useState<
-    "employee" | "myOrders" | "tracking" | "historical" | "orderStatus"
-  >("employee");
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  type ViewType = "employee" | "myOrders" | "tracking" | "historical";
 
-  // Mock data for development
+  const [currentView, setCurrentView] = useState<ViewType>(() => {
+    const savedView = localStorage.getItem("currentView");
+    return (savedView as ViewType) || "employee";
+  });
+
+  // Fetch tracking orders only when in tracking view
+  const {
+    orders: trackingOrders,
+    loading: trackingLoading,
+    error: trackingError,
+  } = useSupabaseTrackingOrders(currentView === "tracking");
+
+  // Fetch my orders only when in myOrders or historical view
+  const shouldFetchMyOrders = ["myOrders", "historical"].includes(currentView);
+  const {
+    orders: myOrders,
+    loading: myOrdersLoading,
+    error: myOrdersError,
+  } = useSupabaseMyOrders(shouldFetchMyOrders);
+
   useEffect(() => {
-    const mockOrders: Order[] = [
-      {
-        id: "1",
-        employeeName: "John Doe",
-        phoneNumber: "+1234567890",
-        orderId: "ZOM123456",
-        estimatedDelivery: new Date(Date.now() + 30 * 60000), // 30 minutes from now
-        status: "ordered",
-        createdAt: new Date(),
-        platform: "Zomato",
-      },
-      {
-        id: "2",
-        employeeName: "Jane Smith",
-        phoneNumber: "+1987654321",
-        orderId: "SWG789012",
-        estimatedDelivery: new Date(Date.now() + 45 * 60000), // 45 minutes from now
-        status: "arrived",
-        createdAt: new Date(Date.now() - 15 * 60000), // 15 minutes ago
-        platform: "Swiggy",
-      },
-      {
-        id: "3",
-        employeeName: "Mike Johnson",
-        phoneNumber: "+1122334455",
-        orderId: "UBR345678",
-        estimatedDelivery: new Date(Date.now() - 10 * 60000), // 10 minutes ago (overdue)
-        status: "collected",
-        createdAt: new Date(Date.now() - 60 * 60000), // 1 hour ago
-        platform: "Uber Eats",
-      },
-    ];
-    setOrders(mockOrders);
-  }, []);
-
-  const addOrder = (newOrder: Omit<Order, "id" | "createdAt">) => {
-    const order: Order = {
-      ...newOrder,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-    };
-    setOrders((prev) => [...prev, order]);
-    return order.id;
-  };
+    localStorage.setItem("currentView", currentView);
+  }, [currentView]);
 
   const handleOrderSubmitted = () => {
-    // Navigate to My Orders instead of individual order status
     setCurrentView("myOrders");
-    setCurrentOrderId(null);
   };
 
   const handleBackToForm = () => {
     setCurrentView("employee");
-    setCurrentOrderId(null);
   };
 
-  const updateOrderStatus = (orderId: string, status: OrderStatus) => {
-    setOrders((prev) =>
-      prev.map((order) => (order.id === orderId ? { ...order, status } : order))
-    );
+  const addOrder = async (newOrder: Omit<Order, "id" | "createdAt">) => {
+    const { data, error } = await supabase
+      .from("orders")
+      .insert([
+        {
+          employee_name: newOrder.employeeName,
+          phone_number: newOrder.phoneNumber,
+          order_id: newOrder.orderId,
+          estimated_delivery: newOrder.estimatedDelivery.toISOString(),
+          status: newOrder.status,
+          platform: newOrder.platform,
+        },
+      ])
+      .select()
+      .single();
+    if (error) throw error;
+    return data.id;
   };
 
-  const deleteOrder = (orderId: string) => {
-    setOrders((prev) => prev.filter((order) => order.id !== orderId));
+  const handleUpdateStatus = async (orderId: string, status: OrderStatus) => {
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status })
+        .eq("id", orderId);
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", orderId);
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Form view has no loading state */}
+
       {/* Navigation Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
@@ -140,7 +147,7 @@ function App() {
                 <span className="sm:hidden">Track</span>
               </button>
               {/* History tab - Hidden on mobile, visible on sm and up */}
-              <button
+              {/* <button
                 onClick={() => setCurrentView("historical")}
                 className={`hidden sm:block px-2 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors text-center ${
                   currentView === "historical"
@@ -150,54 +157,79 @@ function App() {
               >
                 <span className="hidden sm:inline">History</span>
                 <span className="sm:hidden">History</span>
-              </button>
+              </button> */}
             </div>
           </nav>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* PWA Install Prompt - Show only on the main employee form view */}
-        {currentView === "employee" && <PWAInstallPrompt />}
-
+      <main className="max-w-7xl mx-auto py-6">
+        {/* Order Form */}
         {currentView === "employee" && (
           <EmployeeOrderForm
-            onAddOrder={(order) => {
-              addOrder(order);
-              handleOrderSubmitted();
-            }}
+            onAddOrder={addOrder}
             onOrderSubmitted={handleOrderSubmitted}
           />
         )}
 
+        {/* My Orders */}
         {currentView === "myOrders" && (
-          <MyOrders
-            orders={orders}
-            onBackToForm={handleBackToForm}
-            onDeleteOrder={deleteOrder}
-          />
+          <>
+            {myOrdersLoading && (
+              <p className="text-center py-12">Loading your orders…</p>
+            )}
+            {myOrdersError && (
+              <p className="text-center text-red-600">{myOrdersError}</p>
+            )}
+            {!myOrdersLoading && !myOrdersError && (
+              <>
+                <MyOrders
+                  orders={myOrders}
+                  onBackToForm={handleBackToForm}
+                  onDeleteOrder={handleDeleteOrder}
+                />
+              </>
+            )}
+          </>
         )}
 
-        {currentView === "orderStatus" && currentOrderId && (
-          <OrderStatusPage
-            orderId={currentOrderId}
-            orders={orders}
-            onBackToForm={handleBackToForm}
-            onUpdateStatus={updateOrderStatus}
-          />
-        )}
-
+        {/* Order Tracking */}
         {currentView === "tracking" && (
-          <OrderTrackingTable
-            orders={orders}
-            onUpdateStatus={updateOrderStatus}
-            onDeleteOrder={deleteOrder}
-          />
+          <>
+            {trackingLoading && (
+              <p className="text-center py-12">Loading today's orders…</p>
+            )}
+            {trackingError && (
+              <p className="text-center text-red-600">{trackingError}</p>
+            )}
+            {!trackingLoading && !trackingError && (
+              <OrderTrackingTable
+                orders={trackingOrders}
+                onUpdateStatus={handleUpdateStatus}
+                onDeleteOrder={handleDeleteOrder}
+              />
+            )}
+          </>
         )}
 
-        {currentView === "historical" && <HistoricalView orders={orders} />}
+        {/* Historical View */}
+        {/* {currentView === "historical" && (
+          <>
+            {myOrdersLoading && (
+              <p className="text-center py-12">Loading order history…</p>
+            )}
+            {myOrdersError && (
+              <p className="text-center text-red-600">{myOrdersError}</p>
+            )}
+            {!myOrdersLoading && !myOrdersError && (
+              <HistoricalView orders={myOrders} />
+            )}
+          </>
+        )} */}
       </main>
+
+      <PWAInstallPrompt />
     </div>
   );
 }

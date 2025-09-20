@@ -22,10 +22,10 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
   } | null>(null);
 
   const filteredAndSortedOrders = useMemo(() => {
+    // Filter by status if needed
     let filtered = orders;
-
     if (filterStatus !== "all") {
-      filtered = orders.filter((order) => order.status === filterStatus);
+      filtered = filtered.filter((order) => order.status === filterStatus);
     }
 
     return filtered.sort((a, b) => {
@@ -125,10 +125,10 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                Order Tracking
+                Today's Orders
               </h2>
               <p className="text-sm sm:text-base text-gray-600">
-                Monitor all food orders and their status
+                Track and manage today's food orders
               </p>
             </div>
           </div>

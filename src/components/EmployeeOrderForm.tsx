@@ -90,6 +90,19 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
       platform: "Zomato",
     };
 
+    // Save order reference to localStorage with a unique key for current user
+    const myOrders = JSON.parse(localStorage.getItem("myOrderIds") || "[]");
+    myOrders.unshift({
+      id: formData.orderId,
+      date: today.toISOString(),
+      employeeName: formData.employeeName, // Add employee name for reference
+    });
+    // Keep only last 20 orders
+    if (myOrders.length > 20) {
+      myOrders.pop();
+    }
+    localStorage.setItem("myOrderIds", JSON.stringify(myOrders));
+
     onAddOrder(newOrder);
 
     // Navigate to order status page
