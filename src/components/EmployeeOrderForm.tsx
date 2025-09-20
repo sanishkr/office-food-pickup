@@ -28,11 +28,11 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
       const minute = now.getMinutes();
       const currentTime = hour + minute / 60;
 
-      //TODO: Check if it's a weekday (Monday to Friday)
-      const isWeekday = day >= 0 && day <= 7;
+      //Check if it's a weekday (Monday to Friday)
+      const isWeekday = day >= 1 && day <= 5;
 
-      //TODO: Check if time is between 11:30 AM (11.5) and 2:00 PM (14.0)
-      const isWithinTimeRange = currentTime >= 0 && currentTime <= 24.0;
+      //Check if time is between 11:30 AM (11.5) and 2:00 PM (14.0)
+      const isWithinTimeRange = currentTime >= 11.5 && currentTime <= 14.0;
 
       setIsTimeRestricted(!(isWeekday && isWithinTimeRange));
     };
