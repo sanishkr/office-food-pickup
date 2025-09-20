@@ -90,8 +90,12 @@ function App() {
           {/* Logo and Title */}
           <div className="flex items-center justify-center py-3 border-b border-gray-100 sm:border-b-0 sm:justify-start sm:py-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🍕</span>
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center p-1">
+                <img
+                  src="/pwa-128x128.png"
+                  alt="Food Pickup Tracker"
+                  className="w-8 h-8"
+                />
               </div>
               <h1 className="text-lg sm:text-xl font-bold text-gray-900">
                 Food Pickup Tracker
@@ -168,8 +172,8 @@ function App() {
         )}
 
         {currentView === "myOrders" && (
-          <MyOrders 
-            orders={orders} 
+          <MyOrders
+            orders={orders}
             onBackToForm={handleBackToForm}
             onDeleteOrder={deleteOrder}
           />
