@@ -87,25 +87,21 @@ export function useSupabaseOrders() {
     const sub = supabase
       .channel("orders-ch")
       .on(
-        "postgres_changes",
+        "postgres_changes" as const,
         { schema: "public", table: "orders", event: "*" },
-        ({
-          eventType,
-          new: n,
-          old: o,
-        }: {
-          eventType: "INSERT" | "UPDATE" | "DELETE";
-          new: SupabaseOrder;
-          old: SupabaseOrder;
-        }) => {
+        (payload) => {
+          const { eventType } = payload;
+          const n = payload.new as SupabaseOrder;
+          const o = payload.old as SupabaseOrder;
+
           setOrders((curr) => {
-            if (eventType === "INSERT") {
-              return [{ ...map(n) }, ...curr];
+            if (eventType === "INSERT" && n) {
+              return [map(n), ...curr];
             }
-            if (eventType === "UPDATE") {
+            if (eventType === "UPDATE" && n) {
               return curr.map((x) => (x.id === n.id ? map(n) : x));
             }
-            if (eventType === "DELETE") {
+            if (eventType === "DELETE" && o) {
               return curr.filter((x) => x.id !== o.id);
             }
             return curr;
