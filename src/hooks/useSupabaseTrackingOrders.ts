@@ -92,8 +92,6 @@ export function useSupabaseTrackingOrders(shouldLoad = false) {
         async (payload) => {
           const { eventType, new: n } = payload;
 
-          console.log({ payload, eventType }); // --- IGNORE ---
-
           // For inserts, updates and deletes, check if it's a today's order
           if (["INSERT", "UPDATE", "DELETE"].includes(eventType)) {
             // Get the created_at date from appropriate source based on event type
