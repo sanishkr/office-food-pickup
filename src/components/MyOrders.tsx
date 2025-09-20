@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Order } from "../types/Order";
 
-interface StoredOrder {
+export interface StoredOrder {
   id: string;
   date: string;
   employeeName: string;
@@ -654,6 +654,20 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                 <button
                   onClick={() => {
                     if (onDeleteOrder) {
+                      // first delete the order from localStorage references
+                      const storedRefs = localStorage.getItem("myOrderIds");
+                      if (storedRefs) {
+                        const allRefs: StoredOrder[] = JSON.parse(storedRefs);
+                        const updatedRefs = allRefs.filter(
+                          (ref) => ref.id !== deleteConfirmation.orderNumber
+                        );
+                        localStorage.setItem(
+                          "myOrderIds",
+                          JSON.stringify(updatedRefs)
+                        );
+                      }
+
+                      // then call the delete function
                       onDeleteOrder(deleteConfirmation.orderId);
                     }
                     setDeleteConfirmation(null);

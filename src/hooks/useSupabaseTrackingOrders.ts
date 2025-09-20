@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import type { Order, OrderStatus } from "../types/Order";
 
-export function useSupabaseTrackingOrders(shouldLoad = true) {
+export function useSupabaseTrackingOrders(shouldLoad = false) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(shouldLoad);
   const [error, setError] = useState<string | null>(null);
@@ -90,20 +90,35 @@ export function useSupabaseTrackingOrders(shouldLoad = true) {
           table: "orders",
         },
         async (payload) => {
-          const { eventType, new: n } = payload;
+          const { eventType, new: n, old: o } = payload;
 
-          // For inserts and updates, check if it's a today's order
-          if (eventType === "INSERT" || eventType === "UPDATE") {
-            const eventDate = new Date(n.created_at);
-            const today = new Date();
-            const isToday =
-              eventDate.getDate() === today.getDate() &&
-              eventDate.getMonth() === today.getMonth() &&
-              eventDate.getFullYear() === today.getFullYear();
+          console.log({ payload, eventType }); // --- IGNORE ---
 
-            // Only reload if it's a today's order
-            if (isToday && mounted.current) {
-              await loadOrders();
+          // For inserts, updates and deletes, check if it's a today's order
+          if (["INSERT", "UPDATE", "DELETE"].includes(eventType)) {
+            // Get the created_at date from appropriate source based on event type
+            // For DELETE, use old record and supabase only sends id; for INSERT and UPDATE, use new record
+            // Note: Supabase sends timestamps in UTC
+            // We consider "today" in the local timezone
+            const createdAt = (n as { created_at?: string })?.created_at;
+
+            if (createdAt || eventType === "DELETE") {
+              // Determine if the event's created_at is today in local timezone
+              // For DELETE events, we can't determine if it was created today since we only have the id
+              // So we optimistically reload the list for DELETE events
+              // This is a limitation due to Supabase not sending the full old record on DELETE events
+              // In a real-world scenario, we might want to store more info in a separate table or log
+              // to accurately track deletions of today's orders
+              const eventDate = createdAt ? new Date(createdAt) : new Date();
+              const today = new Date();
+              const isToday =
+                eventDate.getDate() === today.getDate() &&
+                eventDate.getMonth() === today.getMonth() &&
+                eventDate.getFullYear() === today.getFullYear();
+
+              if (isToday && mounted.current) {
+                await loadOrders();
+              }
             }
           }
         }

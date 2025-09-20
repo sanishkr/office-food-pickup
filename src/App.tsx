@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import EmployeeOrderForm from "./components/EmployeeOrderForm";
 import OrderTrackingTable from "./components/OrderTrackingTable";
 // import HistoricalView from "./components/HistoricalView";
@@ -16,16 +16,26 @@ function App() {
     const savedView = localStorage.getItem("currentView");
     return (savedView as ViewType) || "employee";
   });
+  const mounted = useRef(false);
+
+  // Keep track of component mount state
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   // Fetch tracking orders only when in tracking view
   const {
     orders: trackingOrders,
     loading: trackingLoading,
     error: trackingError,
-  } = useSupabaseTrackingOrders(currentView === "tracking");
+  } = useSupabaseTrackingOrders(mounted.current && currentView === "tracking");
 
-  // Fetch my orders only when in myOrders or historical view
-  const shouldFetchMyOrders = ["myOrders", "historical"].includes(currentView);
+  // Fetch my orders only when in myOrders view
+  const shouldFetchMyOrders = ["myOrders"].includes(currentView);
+
   const {
     orders: myOrders,
     loading: myOrdersLoading,
@@ -37,6 +47,7 @@ function App() {
   }, [currentView]);
 
   const handleOrderSubmitted = () => {
+    // Switch to My Orders view after submission
     setCurrentView("myOrders");
   };
 

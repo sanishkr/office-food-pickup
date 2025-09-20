@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import type { Order, OrderStatus } from "../types/Order";
+import type { StoredOrder } from "../components/MyOrders";
 
 export function useSupabaseMyOrders(shouldLoad: boolean) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(shouldLoad);
   const [error, setError] = useState<string | null>(null);
+  const [localOrderIds, setLocalOrderIds] = useState<string[]>([]);
   const mounted = useRef(false);
 
   // Keep track of component mount state
@@ -16,8 +18,20 @@ export function useSupabaseMyOrders(shouldLoad: boolean) {
     };
   }, []);
 
+  useEffect(() => {
+    if (mounted.current && shouldLoad) {
+      setLocalOrderIds(() => {
+        const saved = localStorage.getItem("myOrderIds");
+        return saved ? JSON.parse(saved).map((o: StoredOrder) => o.id) : [];
+      });
+    }
+  }, [shouldLoad, mounted]);
+
   const loadOrders = useCallback(async () => {
-    if (!shouldLoad || !mounted.current) return;
+    if (!shouldLoad || !mounted.current || !localOrderIds.length) {
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -26,6 +40,7 @@ export function useSupabaseMyOrders(shouldLoad: boolean) {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
+        .in("order_id", localOrderIds)
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -55,7 +70,7 @@ export function useSupabaseMyOrders(shouldLoad: boolean) {
         setLoading(false);
       }
     }
-  }, [shouldLoad]);
+  }, [shouldLoad, JSON.stringify(localOrderIds)]);
 
   useEffect(() => {
     if (!shouldLoad) {

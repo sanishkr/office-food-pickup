@@ -323,7 +323,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                             Mark Arrived
                           </button>
                         )}
-                        <button
+                        {/* <button
                           onClick={() =>
                             setDeleteConfirmation({
                               orderId: order.id,
@@ -333,7 +333,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                           className="bg-red-100 text-red-700 px-3 py-2 rounded-md text-xs font-medium hover:bg-red-200 transition-colors"
                         >
                           🗑️
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
