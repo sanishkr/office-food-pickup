@@ -12,8 +12,7 @@ export default defineConfig({
       manifest: {
         name: "Food Pickup Tracker",
         short_name: "Food Tracker",
-        description:
-          "Track your office food pickup orders from Zomato, Swiggy, and Uber Eats",
+        description: "Track your office food pickup orders from Zomato.",
         theme_color: "#2563eb",
         background_color: "#ffffff",
         display: "standalone",
