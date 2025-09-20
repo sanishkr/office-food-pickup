@@ -90,7 +90,7 @@ export function useSupabaseTrackingOrders(shouldLoad = false) {
           table: "orders",
         },
         async (payload) => {
-          const { eventType, new: n, old: o } = payload;
+          const { eventType, new: n } = payload;
 
           console.log({ payload, eventType }); // --- IGNORE ---
 

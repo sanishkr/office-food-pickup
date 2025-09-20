@@ -109,14 +109,10 @@ function App() {
           <div className="flex items-center justify-center py-3 border-b border-gray-100 sm:border-b-0 sm:justify-start sm:py-4">
             <div className="flex items-center space-x-2">
               <div className="rounded-lg flex items-center justify-center">
-                <img
-                  src="/logo.png"
-                  alt="Food Pickup Tracker"
-                  className="w-10 h-10"
-                />
+                <img src="/logo.png" alt="ZomNext" className="w-10 h-10" />
               </div>
               <h1 className="text-lg sm:text-xl font-bold text-gray-900">
-                Food Pickup Tracker
+                ZomaNext
               </h1>
             </div>
           </div>

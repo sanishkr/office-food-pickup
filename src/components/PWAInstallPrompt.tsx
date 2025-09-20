@@ -85,7 +85,7 @@ export const PWAInstallPrompt = () => {
           <div className="w-6 h-6 text-blue-600 mr-3 mt-0.5">📱</div>
           <div>
             <h3 className="text-sm font-medium text-blue-900 mb-1">
-              Install Food Pickup Tracker
+              Install ZomaNext
             </h3>
             <p className="text-sm text-blue-700 mb-3">
               Install this app on your device for quick access and offline
