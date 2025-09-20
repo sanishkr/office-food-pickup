@@ -83,13 +83,20 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
   };
 
   const getTimeStatus = (estimatedDelivery: Date, status: OrderStatus) => {
-    const now = new Date();
-    const timeDiff = estimatedDelivery.getTime() - now.getTime();
-    const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-
+    // For completed orders, show their status
     if (status === "collected") {
       return { text: "Completed", color: "text-green-600" };
     }
+    
+    // For arrived orders, show arrived status
+    if (status === "arrived") {
+      return { text: "Arrived", color: "text-blue-600" };
+    }
+
+    // Only calculate time differences for orders that are still in progress
+    const now = new Date();
+    const timeDiff = estimatedDelivery.getTime() - now.getTime();
+    const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
     if (minutesDiff < 0) {
       return {
