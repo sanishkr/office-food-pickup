@@ -155,7 +155,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
           <div className="text-yellow-600 text-3xl sm:text-4xl mb-4">👤</div>
           <h2 className="text-lg sm:text-xl font-semibold text-yellow-800 mb-2">
-            Employee Name Not Found
+            No orders found
           </h2>
           <p className="text-yellow-700 mb-6 text-sm sm:text-base">
             Please add an order first to see your orders here.
