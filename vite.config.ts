@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
-        name: "Food Pickup Tracker",
-        short_name: "Food Tracker",
+        name: "ZomaNext",
+        short_name: "ZomaNext",
         description: "Track your office food pickup orders from Zomato.",
         theme_color: "#2563eb",
         background_color: "#ffffff",
