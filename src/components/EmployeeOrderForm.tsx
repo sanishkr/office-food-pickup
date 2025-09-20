@@ -6,6 +6,15 @@ interface EmployeeOrderFormProps {
   onOrderSubmitted?: (orderId: string) => void;
 }
 
+const currentDayName = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+][new Date().getDay()];
 const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
   onAddOrder,
   onOrderSubmitted,
@@ -130,7 +139,8 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
             Orders can only be placed on weekdays between 11:30 AM and 2:00 PM.
           </p>
           <p className="text-sm text-yellow-600 mt-2">
-            Current time: {new Date().toLocaleString()}
+            Current date and time: {new Date().toLocaleString()} -{" "}
+            {currentDayName}
           </p>
         </div>
       </div>
