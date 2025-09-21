@@ -14,7 +14,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
 }) => {
   const [filterStatus, setFilterStatus] = useState<OrderStatus | "all">("all");
   const [sortBy, setSortBy] = useState<
-    "estimatedDelivery" | "createdAt" | "status"
+    "estimatedDelivery" | "createdAt" | "status" | "orderId" | "employeeName"
   >("estimatedDelivery");
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     orderId: string;
@@ -87,7 +87,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
     if (status === "collected") {
       return { text: "Completed", color: "text-green-600" };
     }
-    
+
     // For arrived orders, show arrived status
     if (status === "arrived") {
       return { text: "Arrived", color: "text-blue-600" };
@@ -136,6 +136,9 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
               </h2>
               <p className="text-sm sm:text-base text-gray-600">
                 Track and manage today's food orders
+              </p>
+              <p className="text-xs sm:text-sm text-gray-400">
+                Arrived order always appear at bottom
               </p>
             </div>
           </div>
@@ -198,13 +201,17 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                       | "estimatedDelivery"
                       | "createdAt"
                       | "status"
+                      | "orderId"
+                      | "employeeName"
                   )
                 }
                 className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="estimatedDelivery">Delivery Time</option>
-                <option value="createdAt">Order Time</option>
-                <option value="status">Status</option>
+                <option value="estimatedDelivery">Delivery Time (ASC)</option>
+                <option value="createdAt">Order Time (DESC)</option>
+                <option value="status">Status (ASC)</option>
+                <option value="orderId">Order Id (ASC)</option>
+                <option value="employeeName">Employee Name (ASC)</option>
               </select>
             </div>
           </div>
