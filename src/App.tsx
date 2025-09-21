@@ -9,6 +9,7 @@ import { useSupabaseMyOrders } from "./hooks/useSupabaseMyOrders";
 import { useSupabaseTrackingOrders } from "./hooks/useSupabaseTrackingOrders";
 import { supabase } from "./lib/supabase";
 import { NotificationButton } from "./components/NotificationButton";
+import { ThemeToggleButton } from "./components/ThemeToggleButton";
 
 function App() {
   type ViewType = "employee" | "myOrders" | "tracking" | "historical";
@@ -120,18 +121,24 @@ function App() {
                 ZomaNext
               </h1>
             </div>
-            {isEmployeeOrMyOrdersView && (
+            <div className="flex items-center space-x-3">
               <div className="block md:hidden">
-                <NotificationButton />
+                <ThemeToggleButton />
               </div>
-            )}
+              {isEmployeeOrMyOrdersView && (
+                <div className="block md:hidden">
+                  <NotificationButton />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Navigation */}
           <nav className="py-3 sm:py-0 sm:absolute sm:top-4 sm:right-4 lg:right-8">
             <div className="grid grid-cols-3 gap-1 sm:flex sm:space-x-2 sm:items-center">
               {isEmployeeOrMyOrdersView && (
-                <div className="col-span-3 sm:mb-0 mt-1 hidden md:block sm:col-auto">
+                <div className="col-span-3 sm:mb-0 mt-1 hidden md:flex sm:col-auto gap-4">
+                  <ThemeToggleButton />
                   <NotificationButton />
                 </div>
               )}
