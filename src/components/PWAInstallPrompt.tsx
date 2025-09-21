@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: Array<string>;
@@ -63,10 +63,10 @@ export const PWAInstallPrompt = () => {
 
   if (isInstalled) {
     return (
-      <div className="mobile-hide-in-pwa bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+      <div className="p-3 mb-4 border border-green-200 rounded-lg mobile-hide-in-pwa bg-green-50">
         <div className="flex items-center">
-          <div className="w-5 h-5 text-green-600 mr-2">✓</div>
-          <p className="text-sm text-green-800 font-medium">
+          <div className="w-5 h-5 mr-2 text-green-600">✓</div>
+          <p className="text-sm font-medium text-green-800">
             App installed! You can access it from your home screen.
           </p>
         </div>
@@ -79,28 +79,28 @@ export const PWAInstallPrompt = () => {
   }
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+    <div className="p-4 border border-blue-200 rounded-lg md:w-2/5 md:mx-auto bg-blue-50 dark:bg-blue-800">
       <div className="flex items-start justify-between">
         <div className="flex">
           <div className="w-6 h-6 text-blue-600 mr-3 mt-0.5">📱</div>
           <div>
-            <h3 className="text-sm font-medium text-blue-900 mb-1">
+            <h3 className="mb-1 text-sm font-medium text-blue-900 dark:text-blue-100">
               Install ZomaNext
             </h3>
-            <p className="text-sm text-blue-700 mb-3">
+            <p className="mb-3 text-sm text-blue-700 dark:text-blue-400">
               Install this app on your device for quick access and offline
               functionality.
             </p>
             <div className="flex space-x-2">
               <button
                 onClick={handleInstallClick}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700 dark:bg-blue-200 dark:text-blue-900"
               >
                 Install App
               </button>
               <button
                 onClick={() => setIsInstallable(false)}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
               >
                 Maybe Later
               </button>

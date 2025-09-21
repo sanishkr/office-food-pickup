@@ -130,15 +130,17 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
   if (isTimeRestricted) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <div className="text-yellow-600 text-4xl mb-4">⏰</div>
-          <h2 className="text-xl font-semibold text-yellow-800 mb-2">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 text-center">
+          <div className="text-yellow-600 dark:text-yellow-500 text-4xl mb-4">
+            ⏰
+          </div>
+          <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-300 mb-2">
             Order Placement Restricted
           </h2>
-          <p className="text-yellow-700">
+          <p className="text-yellow-700 dark:text-yellow-200">
             Orders can only be placed on weekdays between 11:30 AM and 2:00 PM.
           </p>
-          <p className="text-sm text-yellow-600 mt-2">
+          <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-2">
             Current date and time: {new Date().toLocaleString()} -{" "}
             {currentDayName}
           </p>
@@ -149,16 +151,18 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
         <div className="flex items-center mb-6">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-            <span className="text-green-600 text-xl">📱</span>
+          <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mr-3">
+            <span className="text-green-600 dark:text-green-400 text-xl">
+              📱
+            </span>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               Add Order Details
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Add your Zomato order details for pickup tracking
             </p>
           </div>
@@ -169,7 +173,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
             <div>
               <label
                 htmlFor="employeeName"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
               >
                 Employee Name *
               </label>
@@ -184,7 +188,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
                     employeeName: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
                 placeholder="Enter your full name"
               />
             </div>
@@ -192,7 +196,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
               >
                 Phone Number *
               </label>
@@ -207,7 +211,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
                     phoneNumber: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
                 placeholder="+1234567890"
               />
             </div>
@@ -217,7 +221,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
             <div>
               <label
                 htmlFor="orderId"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
               >
                 Zomato Order ID *
               </label>
@@ -232,7 +236,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, orderId: e.target.value }))
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
                 placeholder="e.g., ZOM123456"
               />
             </div>
@@ -240,7 +244,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
             <div>
               <label
                 htmlFor="estimatedDeliveryTime"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
               >
                 Estimated Delivery Time *
               </label>
@@ -258,7 +262,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
                     estimatedDeliveryTime: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
               />
             </div>
           </div>
@@ -274,7 +278,7 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
                   estimatedDeliveryTime: "",
                 })
               }
-              className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 transition-colors"
             >
               Reset
             </button>

@@ -47,7 +47,7 @@ export const NotificationButton: React.FC = () => {
       <svg
         className={`w-5 h-5 ${
           notificationPermission === "denied"
-            ? "text-gray-300"
+            ? "text-gray-300 dark:text-gray-600"
             : "text-purple-600 hover:text-purple-900 animate-pulse hover:animate-bounce hover:scale-110 transition-transform duration-200"
         }`}
         fill="none"
