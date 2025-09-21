@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media all and (display-mode: standalone) {
+  .mobile-hide-in-pwa {
+    display: none
+  }
+}

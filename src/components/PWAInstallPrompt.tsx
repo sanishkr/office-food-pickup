@@ -63,7 +63,7 @@ export const PWAInstallPrompt = () => {
 
   if (isInstalled) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+      <div className="mobile-hide-in-pwa bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
         <div className="flex items-center">
           <div className="w-5 h-5 text-green-600 mr-2">✓</div>
           <p className="text-sm text-green-800 font-medium">
