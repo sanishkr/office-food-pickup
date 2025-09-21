@@ -138,7 +138,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                 Track and manage today's food orders
               </p>
               <p className="text-xs sm:text-sm text-gray-400">
-                Arrived order always appear at bottom
+                Arrived order always appear at bottom(unsorted)
               </p>
             </div>
           </div>
@@ -291,7 +291,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                           Estimated Delivery
                         </div>
                         <div className="text-sm font-medium text-gray-900">
-                          {formatTime(order.estimatedDelivery)}
+                          {formatTime(order.estimatedDelivery)} 🛵
                         </div>
                         <div className={`text-xs ${timeStatus.color}`}>
                           {timeStatus.text}

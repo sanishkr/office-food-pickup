@@ -8,6 +8,7 @@ import type { Order, OrderStatus } from "./types/Order";
 import { useSupabaseMyOrders } from "./hooks/useSupabaseMyOrders";
 import { useSupabaseTrackingOrders } from "./hooks/useSupabaseTrackingOrders";
 import { supabase } from "./lib/supabase";
+import { NotificationButton } from "./components/NotificationButton";
 
 function App() {
   type ViewType = "employee" | "myOrders" | "tracking" | "historical";
@@ -26,6 +27,10 @@ function App() {
     };
   }, []);
 
+  const isEmployeeOrMyOrdersView = ["myOrders", "employee"].includes(
+    currentView
+  );
+
   // Fetch tracking orders only when in tracking view
   const {
     orders: trackingOrders,
@@ -40,7 +45,7 @@ function App() {
     orders: myOrders,
     loading: myOrdersLoading,
     error: myOrdersError,
-  } = useSupabaseMyOrders(shouldFetchMyOrders);
+  } = useSupabaseMyOrders(shouldFetchMyOrders, isEmployeeOrMyOrdersView);
 
   useEffect(() => {
     localStorage.setItem("currentView", currentView);
@@ -106,7 +111,7 @@ function App() {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           {/* Logo and Title */}
-          <div className="flex items-center justify-center py-3 border-b border-gray-100 sm:border-b-0 sm:justify-start sm:py-4">
+          <div className="flex items-center justify-between py-3 border-b border-gray-100 sm:border-b-0 sm:py-4">
             <div className="flex items-center space-x-2">
               <div className="rounded-lg flex items-center justify-center">
                 <img src="/logo.png" alt="ZomNext" className="w-10 h-10" />
@@ -115,11 +120,21 @@ function App() {
                 ZomaNext
               </h1>
             </div>
+            {isEmployeeOrMyOrdersView && (
+              <div className="block md:hidden">
+                <NotificationButton />
+              </div>
+            )}
           </div>
 
           {/* Navigation */}
           <nav className="py-3 sm:py-0 sm:absolute sm:top-4 sm:right-4 lg:right-8">
-            <div className="grid grid-cols-3 gap-1 sm:flex sm:space-x-1">
+            <div className="grid grid-cols-3 gap-1 sm:flex sm:space-x-2 sm:items-center">
+              {isEmployeeOrMyOrdersView && (
+                <div className="col-span-3 sm:mb-0 mt-1 hidden md:block sm:col-auto">
+                  <NotificationButton />
+                </div>
+              )}
               <button
                 onClick={() => setCurrentView("employee")}
                 className={`px-2 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors text-center ${
