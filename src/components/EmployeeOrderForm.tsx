@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { Order } from "../types/Order";
 
 interface EmployeeOrderFormProps {
-  onAddOrder: (order: Omit<Order, "id" | "createdAt">) => void;
+  onAddOrder: (order: Omit<Order, "id" | "createdAt">) => Promise<void>;
   onOrderSubmitted?: (orderId: string) => void;
 }
 
@@ -112,12 +112,12 @@ const EmployeeOrderForm: React.FC<EmployeeOrderFormProps> = ({
     }
     localStorage.setItem("myOrderIds", JSON.stringify(myOrders));
 
-    onAddOrder(newOrder);
-
-    // Navigate to order status page
-    if (onOrderSubmitted) {
-      onOrderSubmitted(formData.orderId);
-    }
+    onAddOrder(newOrder).then(() => {
+      // Navigate to order status page
+      if (onOrderSubmitted) {
+        onOrderSubmitted(formData.orderId);
+      }
+    });
 
     // Reset form (but keep employee data)
     setFormData((prev) => ({
