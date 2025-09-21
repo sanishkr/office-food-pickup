@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Order, OrderStatus } from "../types/Order";
 
 interface OrderTrackingTableProps {
@@ -74,7 +74,13 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
     const config = statusConfig[status];
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium w-fit md:w-auto ${config.color}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium w-fit md:w-auto ${
+          status === "ordered"
+            ? "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200"
+            : status === "collected"
+            ? "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200"
+            : "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200"
+        }`}
       >
         <span className="mr-1">{config.icon}</span>
         {config.text}
@@ -85,12 +91,12 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
   const getTimeStatus = (estimatedDelivery: Date, status: OrderStatus) => {
     // For completed orders, show their status
     if (status === "collected") {
-      return { text: "Completed", color: "text-green-600" };
+      return { text: "Completed", color: "text-green-600 dark:text-green-400" };
     }
 
     // For arrived orders, show arrived status
     if (status === "arrived") {
-      return { text: "Arrived", color: "text-blue-600" };
+      return { text: "Arrived", color: "text-blue-600 dark:text-blue-400" };
     }
 
     // Only calculate time differences for orders that are still in progress
@@ -101,15 +107,18 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
     if (minutesDiff < 0) {
       return {
         text: `${Math.abs(minutesDiff)} min overdue`,
-        color: "text-red-600 font-semibold",
+        color: "text-red-600 dark:text-red-400 font-semibold",
       };
     } else if (minutesDiff <= 10) {
       return {
         text: `${minutesDiff} min remaining`,
-        color: "text-orange-600 font-medium",
+        color: "text-orange-600 dark:text-orange-400 font-medium",
       };
     } else {
-      return { text: `${minutesDiff} min remaining`, color: "text-gray-600" };
+      return {
+        text: `${minutesDiff} min remaining`,
+        color: "text-gray-600 dark:text-gray-400",
+      };
     }
   };
 
@@ -122,57 +131,65 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 lg:px-8">
+    <div className="px-3 space-y-4 sm:space-y-6 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+      <div className="p-4 bg-white rounded-lg shadow-md dark:bg-gray-800 sm:p-6">
         <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-              <span className="text-blue-600 text-lg sm:text-xl">📊</span>
+            <div className="flex items-center justify-center w-8 h-8 mr-3 bg-blue-100 rounded-full sm:w-10 sm:h-10 dark:bg-blue-900/50">
+              <span className="text-lg text-blue-600 dark:text-blue-400 sm:text-xl">
+                📊
+              </span>
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">
                 Today's Orders
               </h2>
-              <p className="text-sm sm:text-base text-gray-600">
+              <p className="text-sm text-gray-600 sm:text-base dark:text-gray-300">
                 Track and manage today's food orders
               </p>
-              <p className="text-xs sm:text-sm text-gray-400">
+              <p className="text-xs text-gray-400 sm:text-sm dark:text-gray-500">
                 Arrived order always appear at bottom(unsorted)
               </p>
             </div>
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-            <div className="bg-yellow-50 px-2 sm:px-4 py-2 rounded-lg">
-              <div className="text-lg sm:text-xl font-bold text-yellow-800">
+          <div className="grid grid-cols-3 gap-2 text-center sm:gap-4">
+            <div className="px-2 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 sm:px-4">
+              <div className="text-lg font-bold text-yellow-800 sm:text-xl dark:text-yellow-300">
                 {orders.filter((o) => o.status === "ordered").length}
               </div>
-              <div className="text-xs text-yellow-600">Ordered</div>
+              <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                Ordered
+              </div>
             </div>
-            <div className="bg-blue-50 px-2 sm:px-4 py-2 rounded-lg">
-              <div className="text-lg sm:text-xl font-bold text-blue-800">
+            <div className="px-2 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 sm:px-4">
+              <div className="text-lg font-bold text-blue-800 sm:text-xl dark:text-blue-300">
                 {orders.filter((o) => o.status === "collected").length}
               </div>
-              <div className="text-xs text-blue-600">Collected</div>
+              <div className="text-xs text-blue-600 dark:text-blue-400">
+                Collected
+              </div>
             </div>
-            <div className="bg-green-50 px-2 sm:px-4 py-2 rounded-lg">
-              <div className="text-lg sm:text-xl font-bold text-green-800">
+            <div className="px-2 py-2 rounded-lg bg-green-50 dark:bg-green-900/30 sm:px-4">
+              <div className="text-lg font-bold text-green-800 sm:text-xl dark:text-green-300">
                 {orders.filter((o) => o.status === "arrived").length}
               </div>
-              <div className="text-xs text-green-600">Arrived</div>
+              <div className="text-xs text-green-600 dark:text-green-400">
+                Arrived
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border">
-        <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
+      <div className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800 sm:p-6 dark:border-gray-700">
+        <div className="flex flex-col gap-4 space-y-4 sm:space-y-0 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col items-start space-y-4 sm:flex-row sm:items-end sm:space-y-0 sm:space-x-4">
             <div className="w-full sm:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Filter by Status
               </label>
               <select
@@ -180,7 +197,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                 onChange={(e) =>
                   setFilterStatus(e.target.value as OrderStatus | "all")
                 }
-                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md sm:w-auto dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All Orders</option>
                 <option value="ordered">Ordered</option>
@@ -190,7 +207,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
             </div>
 
             <div className="w-full sm:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Sort by
               </label>
               <select
@@ -205,7 +222,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                       | "employeeName"
                   )
                 }
-                className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="estimatedDelivery">Delivery Time (ASC)</option>
                 <option value="createdAt">Order Time (DESC)</option>
@@ -216,7 +233,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
             </div>
           </div>
 
-          <div className="text-sm text-gray-600 text-center sm:text-right">
+          <div className="text-sm text-center text-gray-600 sm:text-right">
             Showing {filteredAndSortedOrders.length} of {orders.length} orders
           </div>
         </div>
@@ -224,9 +241,9 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
 
       {/* Orders List */}
       {filteredAndSortedOrders.length === 0 ? (
-        <div className="bg-white shadow-sm rounded-lg p-8 sm:p-12 text-center">
-          <div className="text-gray-400 text-4xl sm:text-6xl mb-4">🍽️</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="p-8 text-center bg-white rounded-lg shadow-sm dark:bg-gray-800 sm:p-12">
+          <div className="mb-4 text-4xl text-gray-400 sm:text-6xl">🍽️</div>
+          <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
             No orders found
           </h3>
           <p className="text-gray-500">No orders match your current filters.</p>
@@ -241,21 +258,23 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
             return (
               <div
                 key={order.id}
-                className="bg-white shadow-sm rounded-lg border overflow-hidden hover:shadow-md transition-shadow"
+                className="overflow-hidden transition-shadow bg-white border rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 hover:shadow-md"
               >
                 <div className="p-4 sm:p-6">
                   {/* Mobile: Stack vertically, Desktop: Grid layout */}
-                  <div className="flex flex-col sm:grid sm:grid-cols-4 sm:gap-6 space-y-4 sm:space-y-0">
+                  <div className="flex flex-col space-y-4 sm:grid sm:grid-cols-4 sm:gap-6 sm:space-y-0">
                     {/* Employee Info */}
                     <div className="flex items-center sm:col-span-1">
-                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        <span className="text-purple-600 text-lg">👤</span>
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 mr-3 bg-purple-100 rounded-full dark:bg-purple-900/50">
+                        <span className="text-lg text-purple-600 dark:text-purple-400">
+                          👤
+                        </span>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-gray-900 truncate dark:text-white">
                           {order.employeeName}
                         </h3>
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className="text-xs text-gray-500 truncate dark:text-gray-400">
                           {order.phoneNumber}
                         </p>
                       </div>
@@ -265,19 +284,19 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                     <div className="sm:col-span-1">
                       <div className="space-y-1">
                         <div className="flex items-center">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
                             #{order.orderId}
                           </span>
                         </div>
                         {order.platform && (
                           <div className="flex items-center">
-                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">
+                            <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded dark:bg-red-900/50 dark:text-red-300">
                               🍕 {order.platform}
                             </span>
                           </div>
                         )}
                         {order.notes && (
-                          <div className="text-xs text-gray-400 mt-1">
+                          <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                             {order.notes}
                           </div>
                         )}
@@ -287,26 +306,28 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                     {/* Timing Info */}
                     <div className="sm:col-span-1">
                       <div className="space-y-1">
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           Estimated Delivery
                         </div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {formatTime(order.estimatedDelivery)} 🛵
                         </div>
                         <div className={`text-xs ${timeStatus.color}`}>
                           {timeStatus.text}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400 dark:text-gray-500">
                           Ordered: {formatTime(order.createdAt)}
                         </div>
                       </div>
                     </div>
 
                     {/* Status & Actions */}
-                    <div className="sm:col-span-1 flex flex-col sm:items-end space-y-3">
+                    <div className="flex flex-col space-y-3 sm:col-span-1 sm:items-end">
                       {/* Status Badge */}
-                      <div className="flex flex-col sm:items-end space-y-1">
-                        <div className="text-xs text-gray-500">Status:</div>
+                      <div className="flex flex-col space-y-1 sm:items-end">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Status:
+                        </div>
                         {getStatusBadge(order.status)}
                       </div>
 
@@ -317,7 +338,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                             onClick={() =>
                               onUpdateStatus(order.id, "collected")
                             }
-                            className="bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-xs font-medium hover:bg-blue-200 transition-colors"
+                            className="px-3 py-2 text-xs font-medium text-blue-700 transition-colors bg-blue-100 rounded-md dark:bg-blue-900/50 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/50"
                           >
                             Mark Collected
                           </button>
@@ -325,7 +346,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                         {order.status === "collected" && (
                           <button
                             onClick={() => onUpdateStatus(order.id, "arrived")}
-                            className="bg-green-100 text-green-700 px-3 py-2 rounded-md text-xs font-medium hover:bg-green-200 transition-colors"
+                            className="px-3 py-2 text-xs font-medium text-green-700 transition-colors bg-green-100 rounded-md dark:bg-green-900/50 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800/50"
                           >
                             Mark Arrived
                           </button>
@@ -337,7 +358,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                               orderNumber: order.orderId,
                             })
                           }
-                          className="bg-red-100 text-red-700 px-3 py-2 rounded-md text-xs font-medium hover:bg-red-200 transition-colors"
+                          className="px-3 py-2 text-xs font-medium text-red-700 transition-colors bg-red-100 rounded-md hover:bg-red-200"
                         >
                           🗑️
                         </button> */}
@@ -353,24 +374,26 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70">
+          <div className="w-full max-w-md mx-4 bg-white rounded-lg shadow-lg dark:bg-gray-800">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-red-600 text-xl">⚠️</span>
+                <div className="flex items-center justify-center w-12 h-12 mr-4 bg-red-100 rounded-full dark:bg-red-900/50">
+                  <span className="text-xl text-red-600 dark:text-red-400">
+                    ⚠️
+                  </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Delete Order
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     This action cannot be undone
                   </p>
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-6">
+              <p className="mb-6 text-gray-700 dark:text-gray-300">
                 Are you sure you want to delete order{" "}
                 <span className="font-semibold">
                   #{deleteConfirmation.orderNumber}
@@ -378,10 +401,10 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                 ? This will permanently remove the order from the system.
               </p>
 
-              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button
                   onClick={() => setDeleteConfirmation(null)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors font-medium"
+                  className="px-4 py-2 font-medium text-gray-700 transition-colors bg-gray-100 rounded-md dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>
@@ -390,7 +413,7 @@ const OrderTrackingTable: React.FC<OrderTrackingTableProps> = ({
                     onDeleteOrder(deleteConfirmation.orderId);
                     setDeleteConfirmation(null);
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium"
+                  className="px-4 py-2 font-medium text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"
                 >
                   Delete Order
                 </button>

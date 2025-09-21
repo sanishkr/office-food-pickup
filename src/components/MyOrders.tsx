@@ -101,13 +101,13 @@ const MyOrders: React.FC<MyOrdersProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ordered":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800";
       case "collected":
-        return "bg-blue-100 text-blue-800 border-blue-200"; // Security collected from gate
+        return "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-800"; // Security collected from gate
       case "arrived":
-        return "bg-green-100 text-green-800 border-green-200"; // Brought inside office
+        return "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800"; // Brought inside office
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700";
     }
   };
 
@@ -117,13 +117,17 @@ const MyOrders: React.FC<MyOrdersProps> = ({
     const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
     if (status === "arrived") {
-      return { text: "Ready to eat!", color: "text-green-600", icon: "🎉" };
+      return {
+        text: "Ready to eat!",
+        color: "text-green-600 dark:text-green-400",
+        icon: "🎉",
+      };
     }
 
     if (status === "collected") {
       return {
         text: "Collected by security",
-        color: "text-blue-600",
+        color: "text-blue-600 dark:text-blue-400",
         icon: "🚚",
       };
     }
@@ -131,19 +135,19 @@ const MyOrders: React.FC<MyOrdersProps> = ({
     if (minutesDiff < 0) {
       return {
         text: `${Math.abs(minutesDiff)} min overdue`,
-        color: "text-red-600 font-semibold",
+        color: "text-red-600 dark:text-red-400 font-semibold",
         icon: "⚠️",
       };
     } else if (minutesDiff <= 10) {
       return {
         text: `Arriving in ${minutesDiff} min`,
-        color: "text-orange-600 font-medium",
+        color: "text-orange-600 dark:text-orange-400 font-medium",
         icon: "🕐",
       };
     } else {
       return {
         text: `Expected in ${minutesDiff} min`,
-        color: "text-gray-600",
+        color: "text-gray-600 dark:text-gray-400",
         icon: "⏰",
       };
     }
@@ -174,24 +178,26 @@ const MyOrders: React.FC<MyOrdersProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-4 px-3 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
           <div className="flex items-center">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-              <span className="text-purple-600 text-lg sm:text-xl">👤</span>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center mr-3">
+              <span className="text-purple-600 dark:text-purple-400 text-lg sm:text-xl">
+                👤
+              </span>
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                 My Orders
               </h2>
-              <p className="text-sm sm:text-base text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                 Welcome back, {currentEmployee}!
               </p>
             </div>
           </div>
           <button
             onClick={onBackToForm}
-            className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
+            className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors text-sm sm:text-base font-medium"
           >
             + Add New Order
           </button>
@@ -199,65 +205,75 @@ const MyOrders: React.FC<MyOrdersProps> = ({
 
         {/* Quick Summary - Today's orders only */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-          <div className="bg-yellow-50 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
-            <div className="text-lg sm:text-xl font-bold text-yellow-800">
+          <div className="bg-yellow-50 dark:bg-yellow-900/30 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
+            <div className="text-lg sm:text-xl font-bold text-yellow-800 dark:text-yellow-300">
               {sortedTodayOrders.filter((o) => o.status === "ordered").length}
             </div>
-            <div className="text-xs text-yellow-600">Ordered</div>
+            <div className="text-xs text-yellow-600 dark:text-yellow-400">
+              Ordered
+            </div>
           </div>
-          <div className="bg-blue-50 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
-            <div className="text-lg sm:text-xl font-bold text-blue-800">
+          <div className="bg-blue-50 dark:bg-blue-900/30 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
+            <div className="text-lg sm:text-xl font-bold text-blue-800 dark:text-blue-300">
               {sortedTodayOrders.filter((o) => o.status === "collected").length}
             </div>
-            <div className="text-xs text-blue-600">Collected</div>
+            <div className="text-xs text-blue-600 dark:text-blue-400">
+              Collected
+            </div>
           </div>
-          <div className="bg-green-50 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
-            <div className="text-lg sm:text-xl font-bold text-green-800">
+          <div className="bg-green-50 dark:bg-green-900/30 px-2 sm:px-4 py-3 sm:py-2 rounded-lg">
+            <div className="text-lg sm:text-xl font-bold text-green-800 dark:text-green-300">
               {sortedTodayOrders.filter((o) => o.status === "arrived").length}
             </div>
-            <div className="text-xs text-green-600">Arrived</div>
+            <div className="text-xs text-green-600 dark:text-green-400">
+              Arrived
+            </div>
           </div>
         </div>
       </div>
 
       {/* Today's Orders */}
       {sortedTodayOrders.length === 0 && sortedPastOrders.length === 0 ? (
-        <div className="bg-white shadow-sm rounded-lg p-8 sm:p-12 text-center">
-          <div className="text-gray-400 text-4xl sm:text-6xl mb-4">🍽️</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-8 sm:p-12 text-center">
+          <div className="text-gray-400 dark:text-gray-500 text-4xl sm:text-6xl mb-4">
+            🍽️
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             No orders yet
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
             You haven't added any orders yet.
           </p>
           <button
             onClick={onBackToForm}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Add Your First Order
           </button>
         </div>
       ) : sortedTodayOrders.length === 0 ? (
-        <div className="bg-white shadow-sm rounded-lg p-8 sm:p-12 text-center">
-          <div className="text-gray-400 text-4xl sm:text-6xl mb-4">🍽️</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-8 sm:p-12 text-center">
+          <div className="text-gray-400 dark:text-gray-500 text-4xl sm:text-6xl mb-4">
+            🍽️
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             No orders today
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
             You haven't added any orders today.
           </p>
           <button
             onClick={onBackToForm}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Add New Order
           </button>
         </div>
       ) : (
         <div className="space-y-3 sm:space-y-4">
-          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="text-blue-600 mr-2">📅</span>
+          <div className="bg-white dark:bg-gray-800 dark:text-white shadow-sm rounded-lg p-4 sm:p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <span className="text-blue-600 dark:text-blue-400 mr-2">📅</span>
               Today's Orders ({sortedTodayOrders.length})
             </h3>
           </div>
@@ -269,7 +285,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
             return (
               <div
                 key={order.id}
-                className="bg-white shadow-sm rounded-lg border overflow-hidden"
+                className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border dark:border-gray-700 overflow-hidden"
               >
                 <div className="p-4 sm:p-6">
                   {/* Mobile: Stack vertically, Desktop: Side by side */}
@@ -285,7 +301,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                           #{order.orderId}
                         </h3>
                         <p className="text-sm text-gray-500">
@@ -321,7 +337,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                     <div>
                       <p className="text-sm text-gray-600">Platform</p>
                       <div className="flex items-center mt-1">
-                        <span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-red-100 text-red-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300">
                           🍕 Zomato
                         </span>
                       </div>
@@ -330,7 +346,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                       <p className="text-sm text-gray-600">
                         Estimated Delivery
                       </p>
-                      <p className="font-medium text-gray-900 mt-1">
+                      <p className="font-medium text-gray-900 dark:text-white mt-1">
                         {order.estimatedDelivery.toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -353,7 +369,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
 
                   {/* Progress Bar */}
                   <div className="mb-4">
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                    <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
                       <span>Progress</span>
                       <span className="font-medium">
                         {order.status === "ordered" && "1/3"}
@@ -361,14 +377,14 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                         {order.status === "arrived" && "3/3"}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 sm:h-2.5">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 sm:h-2.5">
                       <div
                         className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
                           order.status === "ordered"
-                            ? "bg-yellow-500 w-1/3"
+                            ? "bg-yellow-500 dark:bg-yellow-600 w-1/3"
                             : order.status === "collected"
-                            ? "bg-blue-500 w-2/3"
-                            : "bg-green-500 w-full"
+                            ? "bg-blue-500 dark:bg-blue-600 w-2/3"
+                            : "bg-green-500 dark:bg-green-600 w-full"
                         }`}
                       ></div>
                     </div>
@@ -377,8 +393,8 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                   {/* Action Notifications - More compact on mobile */}
                   <div className="space-y-3">
                     {order.status === "ordered" && (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-                        <p className="text-sm text-yellow-800">
+                      <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-md p-3">
+                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
                           <strong className="block sm:inline">
                             📱 Order Added!
                           </strong>
@@ -391,8 +407,8 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                     )}
 
                     {order.status === "collected" && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                        <p className="text-sm text-blue-800">
+                      <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-md p-3">
+                        <p className="text-sm text-blue-800 dark:text-blue-200">
                           <strong className="block sm:inline">
                             🚚 Food Collected!
                           </strong>
@@ -404,8 +420,8 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                     )}
 
                     {order.status === "arrived" && (
-                      <div className="bg-green-50 border border-green-200 rounded-md p-3">
-                        <p className="text-sm text-green-800">
+                      <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-md p-3">
+                        <p className="text-sm text-green-800 dark:text-green-200">
                           <strong className="block sm:inline">
                             ✅ Food Arrived!
                           </strong>
@@ -419,7 +435,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
 
                     {/* Delete Button - Show for all orders if delete function is available */}
                     {onDeleteOrder && (
-                      <div className="flex justify-end pt-2 border-t border-gray-100">
+                      <div className="flex justify-end pt-2 border-t border-gray-100 dark:border-gray-700">
                         <button
                           onClick={() =>
                             setDeleteConfirmation({
@@ -427,7 +443,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                               orderNumber: order.orderId,
                             })
                           }
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
                         >
                           <span className="mr-1">🗑️</span>
                           Delete Order
@@ -453,10 +469,10 @@ const MyOrders: React.FC<MyOrdersProps> = ({
               <div className="flex items-center">
                 <span className="text-gray-600 mr-3">📋</span>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Past Orders ({sortedPastOrders.length})
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Orders from previous days
                   </p>
                 </div>
@@ -619,23 +635,25 @@ const MyOrders: React.FC<MyOrdersProps> = ({
       {/* Delete Confirmation Modal */}
       {deleteConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4">
             <div className="p-6">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-red-600 text-xl">⚠️</span>
+                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-red-600 dark:text-red-400 text-xl">
+                    ⚠️
+                  </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Delete Order
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     This action cannot be undone
                   </p>
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-6">
+              <p className="text-gray-700 dark:text-gray-300 mb-6">
                 Are you sure you want to delete order{" "}
                 <span className="font-semibold">
                   #{deleteConfirmation.orderNumber}
@@ -647,7 +665,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
               <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
                 <button
                   onClick={() => setDeleteConfirmation(null)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors font-medium"
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium"
                 >
                   Cancel
                 </button>
@@ -672,7 +690,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                     }
                     setDeleteConfirmation(null);
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium"
+                  className="px-4 py-2 bg-red-600 dark:bg-red-500 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition-colors font-medium"
                 >
                   Delete Order
                 </button>
